@@ -3,6 +3,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define C_TO_F_MULT 1.8
+#define C_TO_F_OFF 32.0
+#define KG_TO_LB 2.20462262185
+#define CM_TO_IN 0.393700787402
+#define M_TO_FT 3.28083989501
+#define KM_TO_MI 0.621371
+#define M_TO_YD 1.09361
+
 /* Function declarations */
 int usage_conv(void);
 int usage_c2f(void);
@@ -172,7 +180,7 @@ int c2f(char* input_c)
 		return 1;
 	}
 
-	output = (input * 9.0 / 5.0) + 32.0;
+	output = (input * C_TO_F_MULT) + C_TO_F_OFF;
 	printf("%.3f°C = %.3f°F\n", input, output);
 	return 0;
 }
@@ -191,7 +199,7 @@ int f2c(char* input_f)
 		return 1;
 	}
 
-	output = (input - 32.0) * 5.0 / 9.0;
+	output = (input - C_TO_F_OFF) / C_TO_F_MULT;
 	printf("%.3f°F = %.3f°C\n", input, output);
 	return 0;
 }
@@ -210,7 +218,7 @@ int k2l(char* input_kg)
 		return 1;
 	}
 
-	output = input * 2.20462262185;
+	output = input * KG_TO_LB;
 	printf("%.3f kg = %.3f lbs\n", input, output);
 	return 0;
 }
@@ -229,7 +237,7 @@ int l2k(char* input_lb)
 		return 1;
 	}
 
-	output = input / 2.20462262185;
+	output = input / KG_TO_LB;
 	printf("%.3f lbs = %.3f kg\n", input, output);
 	return 0;
 }
@@ -248,7 +256,7 @@ int m2i(char* input_m)
 		return 1;
 	}
 
-	output = input * 39.3700787402;
+	output = input * CM_TO_IN * 100.0;
 	printf("%.3f m = %.3f in\n", input, output);
 	return 0;
 }
@@ -267,7 +275,7 @@ int i2m(char* input_in)
 		return 1;
 	}
 
-	output = input / 39.3700787402;
+	output = input / CM_TO_IN / 100.0;
 	printf("%.3f in = %.3f m\n", input, output);
 	return 0;
 }
@@ -286,7 +294,7 @@ int m2f(char* input_m)
 		return 1;
 	}
 
-	output = input * 3.28083989501;
+	output = input * M_TO_FT;
 	printf("%.3f m = %.3f ft\n", input, output);
 	return 0;
 }
@@ -305,7 +313,7 @@ int f2m(char* input_f)
 		return 1;
 	}
 
-	output = input / 3.28083989501;
+	output = input / M_TO_FT;
 	printf("%.3f ft = %.3f m\n", input, output);
 	return 0;
 }
@@ -324,7 +332,7 @@ int k2m(char* input_km)
 		return 1;
 	}
 
-	output = input * 0.621371;
+	output = input * KM_TO_MI;
 	printf("%.3f km = %.3f mi\n", input, output);
 	return 0;
 }
@@ -343,7 +351,7 @@ int m2k(char* input_mi)
 		return 1;
 	}
 
-	output = input / 0.621371;
+	output = input / KM_TO_MI;
 	printf("%.3f mi = %.3f km\n", input, output);
 	return 0;
 }
@@ -362,7 +370,7 @@ int c2i(char* input_cm)
 		return 1;
 	}
 
-	output = input * 0.393701;
+	output = input * CM_TO_IN;
 	printf("%.3f cm = %.3f in\n", input, output);
 	return 0;
 }
@@ -381,7 +389,7 @@ int i2c(char* input_in)
 		return 1;
 	}
 
-	output = input / 0.393701;
+	output = input / CM_TO_IN;
 	printf("%.3f in = %.3f cm\n", input, output);
 	return 0;
 }
@@ -400,7 +408,7 @@ int m2y(char* input_m)
 		return 1;
 	}
 
-	output = input * 1.09361;
+	output = input * M_TO_YD;
 	printf("%.3f m = %.3f yd\n", input, output);
 	return 0;
 }
@@ -419,7 +427,7 @@ int y2m(char* input_y)
 		return 1;
 	}
 
-	output = input / 1.09361;
+	output = input / M_TO_YD;
 	printf("%.3f yd = %.3f m\n", input, output);
 	return 0;
 }
@@ -437,11 +445,196 @@ int usage_y2m(void)
 }
 
 /* Main function */
+static int handle_temperature(int argc, char** argv)
+{
+	if (argc != 4) {
+		return usage_conv();
+	}
+	if (argv[1][0] == '-' && argv[1][1] == 't') {
+		if (argv[2][0] == '-' && argv[2][1] == 'c') {
+			return c2f(argv[3]);
+		}
+		if (argv[2][0] == '-' && argv[2][1] == 'f') {
+			return f2c(argv[3]);
+		}
+	}
+	usage_conv();
+	return 1;
+}
+
+static int handle_weight(int argc, char** argv)
+{
+	if (argc != 4) {
+		return usage_conv();
+	}
+	if (argv[1][0] == '-' && argv[1][1] == 'w') {
+		if (argv[2][0] == '-' && argv[2][1] == 'k') {
+			return k2l(argv[3]);
+		}
+		if (argv[2][0] == '-' && argv[2][1] == 'l') {
+			return l2k(argv[3]);
+		}
+	}
+	usage_conv();
+	return 1;
+}
+
+static int handle_distance_ext(int argc __attribute__((unused)), char** argv)
+{
+	if (argv[2][0] == '-' && argv[2][1] == 'm' && argv[2][2] == 'e') {
+		return m2y(argv[3]);
+	}
+	if (argv[2][0] == '-' && argv[2][1] == 'c' && argv[2][2] == '\0') {
+		return c2i(argv[3]);
+	}
+	if (argv[2][0] == '-' && argv[2][1] == 'i' && argv[2][2] == '\0') {
+		return i2c(argv[3]);
+	}
+	if (argv[2][0] == '-' && argv[2][1] == 'I' && argv[2][2] == '\0') {
+		return i2m(argv[3]);
+	}
+	if (argv[2][0] == '-' && argv[2][1] == 'm' && argv[2][2] == 'i') {
+		return m2k(argv[3]);
+	}
+	if (argv[2][0] == '-' && argv[2][1] == 'k' && argv[2][2] == '\0') {
+		return k2m(argv[3]);
+	}
+	if (argv[2][0] == '-' && argv[2][1] == 'm' && argv[2][2] == '\0') {
+		return m2i(argv[3]);
+	}
+	if (argv[2][0] == '-' && argv[2][1] == 'M' && argv[2][2] == '\0') {
+		return m2f(argv[3]);
+	}
+	if (argv[2][0] == '-' && argv[2][1] == 'F' && argv[2][2] == '\0') {
+		return f2m(argv[3]);
+	}
+	return 1;
+}
+
+static int handle_distance(int argc, char** argv)
+{
+	if (argc != 4) {
+		return usage_conv();
+	}
+	if (argv[1][0] == '-' && argv[1][1] == 'd') {
+		if (argv[2][0] == '-' && argv[2][1] == 'y' && argv[2][2] == '\0') {
+			return y2m(argv[3]);
+		}
+		if (handle_distance_ext(argc, argv) == 0) {
+			return 0;
+		}
+	}
+	usage_conv();
+	return 1;
+}
+
+static int run_temp_weight_symlinks(char* progname, int argc, char** argv)
+{
+	if (strcmp(progname, "c2f") == 0) {
+		if (argc != 2) {
+			return usage_c2f();
+		}
+		return c2f(argv[1]);
+	}
+	if (strcmp(progname, "f2c") == 0) {
+		if (argc != 2) {
+			return usage_f2c();
+		}
+		return f2c(argv[1]);
+	}
+	if (strcmp(progname, "k2l") == 0) {
+		if (argc != 2) {
+			return usage_k2l();
+		}
+		return k2l(argv[1]);
+	}
+	if (strcmp(progname, "l2k") == 0) {
+		if (argc != 2) {
+			return usage_l2k();
+		}
+		return l2k(argv[1]);
+	}
+	return -1;
+}
+
+static int check_and_run(char* progname, int argc, char** argv, const char* name, int (*func)(char*), int (*usage)(void))
+{
+	if (strcmp(progname, name) == 0) {
+		if (argc != 2) {
+			return usage();
+		}
+		return func(argv[1]);
+	}
+	return -1;
+}
+
+static int run_distance_symlinks(char* progname, int argc, char** argv)
+{
+	int result;
+	result = check_and_run(progname, argc, argv, "m2i", m2i, usage_m2i);
+	if (result != -1) {
+		return result;
+	}
+	result = check_and_run(progname, argc, argv, "i2m", i2m, usage_i2m);
+	if (result != -1) {
+		return result;
+	}
+	result = check_and_run(progname, argc, argv, "m2f", m2f, usage_m2f);
+	if (result != -1) {
+		return result;
+	}
+	result = check_and_run(progname, argc, argv, "f2m", f2m, usage_f2m);
+	if (result != -1) {
+		return result;
+	}
+	result = check_and_run(progname, argc, argv, "k2m", k2m, usage_k2m);
+	if (result != -1) {
+		return result;
+	}
+	result = check_and_run(progname, argc, argv, "m2k", m2k, usage_m2k);
+	if (result != -1) {
+		return result;
+	}
+	result = check_and_run(progname, argc, argv, "c2i", c2i, usage_c2i);
+	if (result != -1) {
+		return result;
+	}
+	result = check_and_run(progname, argc, argv, "i2c", i2c, usage_i2c);
+	if (result != -1) {
+		return result;
+	}
+	result = check_and_run(progname, argc, argv, "m2y", m2y, usage_m2y);
+	if (result != -1) {
+		return result;
+	}
+	result = check_and_run(progname, argc, argv, "y2m", y2m, usage_y2m);
+	if (result != -1) {
+		return result;
+	}
+	return -1;
+}
+
+static int run_conversion(char* progname, int argc, char** argv)
+{
+	int result;
+
+	result = run_temp_weight_symlinks(progname, argc, argv);
+	if (result != -1) {
+		return result;
+	}
+	return run_distance_symlinks(progname, argc, argv);
+}
+
+static int handle_symlink(char* progname, int argc, char** argv)
+{
+	return run_conversion(progname, argc, argv);
+}
+
 int main(int argc, char** argv)
 {
 	char* progname;
+	int result;
 
-	/* Get the program name (basename) */
 	progname = strrchr(argv[0], '/');
 	if (progname) {
 		progname++;
@@ -449,184 +642,21 @@ int main(int argc, char** argv)
 		progname = argv[0];
 	}
 
-	/* Check if invoked as c2f */
-	if (strcmp(progname, "c2f") == 0) {
-		if (argc != 2) {
-			return usage_c2f();
+	result = handle_symlink(progname, argc, argv);
+	if (result != -1) {
+		return result;
+	}
+
+	if (argc >= 2 && argv[1][0] == '-') {
+		if (argv[1][1] == 't') {
+			return handle_temperature(argc, argv);
 		}
-		return c2f(argv[1]);
-	}
-
-	/* Check if invoked as f2c */
-	if (strcmp(progname, "f2c") == 0) {
-		if (argc != 2) {
-			return usage_f2c();
+		if (argv[1][1] == 'w') {
+			return handle_weight(argc, argv);
 		}
-		return f2c(argv[1]);
-	}
-
-	/* Check if invoked as k2l */
-	if (strcmp(progname, "k2l") == 0) {
-		if (argc != 2) {
-			return usage_k2l();
-		}
-		return k2l(argv[1]);
-	}
-
-	/* Check if invoked as l2k */
-	if (strcmp(progname, "l2k") == 0) {
-		if (argc != 2) {
-			return usage_l2k();
-		}
-		return l2k(argv[1]);
-	}
-
-	/* Check if invoked as m2i */
-	if (strcmp(progname, "m2i") == 0) {
-		if (argc != 2) {
-			return usage_m2i();
-		}
-		return m2i(argv[1]);
-	}
-
-	/* Check if invoked as i2m */
-	if (strcmp(progname, "i2m") == 0) {
-		if (argc != 2) {
-			return usage_i2m();
-		}
-		return i2m(argv[1]);
-	}
-
-	/* Check if invoked as m2f */
-	if (strcmp(progname, "m2f") == 0) {
-		if (argc != 2) {
-			return usage_m2f();
-		}
-		return m2f(argv[1]);
-	}
-
-	/* Check if invoked as f2m */
-	if (strcmp(progname, "f2m") == 0) {
-		if (argc != 2) {
-			return usage_f2m();
-		}
-		return f2m(argv[1]);
-	}
-
-	/* Check if invoked as k2m */
-	if (strcmp(progname, "k2m") == 0) {
-		if (argc != 2) {
-			return usage_k2m();
-		}
-		return k2m(argv[1]);
-	}
-
-	/* Check if invoked as m2k */
-	if (strcmp(progname, "m2k") == 0) {
-		if (argc != 2) {
-			return usage_m2k();
-		}
-		return m2k(argv[1]);
-	}
-
-	/* Check if invoked as c2i */
-	if (strcmp(progname, "c2i") == 0) {
-		if (argc != 2) {
-			return usage_c2i();
-		}
-		return c2i(argv[1]);
-	}
-
-	/* Check if invoked as i2c */
-	if (strcmp(progname, "i2c") == 0) {
-		if (argc != 2) {
-			return usage_i2c();
-		}
-		return i2c(argv[1]);
-	}
-
-	/* Check if invoked as m2y */
-	if (strcmp(progname, "m2y") == 0) {
-		if (argc != 2) {
-			return usage_m2y();
-		}
-		return m2y(argv[1]);
-	}
-
-	/* Check if invoked as y2m */
-	if (strcmp(progname, "y2m") == 0) {
-		if (argc != 2) {
-			return usage_y2m();
-		}
-		return y2m(argv[1]);
-	}
-
-	/* Otherwise use conv behavior with flags */
-	if (argc != 4) {
-		return usage_conv();
-	}
-
-	/* Temperature conversions */
-	if (argv[1][0] == '-' && argv[1][1] == 't') {
-		if (argv[2][0] == '-' && argv[2][1] == 'c') {
-			return c2f(argv[3]);
-		} else if (argv[2][0] == '-' && argv[2][1] == 'f') {
-			return f2c(argv[3]);
-		} else {
-			usage_conv();
-			return 1;
+		if (argv[1][1] == 'd') {
+			return handle_distance(argc, argv);
 		}
 	}
-
-	/* Weight conversions */
-	if (argv[1][0] == '-' && argv[1][1] == 'w') {
-		if (argv[2][0] == '-' && argv[2][1] == 'k') {
-			return k2l(argv[3]);
-		} else if (argv[2][0] == '-' && argv[2][1] == 'l') {
-			return l2k(argv[3]);
-		} else {
-			usage_conv();
-			return 1;
-		}
-	}
-
-	/* Distance conversions */
-	if (argv[1][0] == '-' && argv[1][1] == 'd') {
-		if (argv[2][0] == '-' && argv[2][1] == 'y' && argv[2][2] == '\0') {
-			return y2m(argv[3]);
-		} else if (argv[2][0] == '-' && argv[2][1] == 'm' &&
-		 argv[2][2] == 'e') {
-			return m2y(argv[3]);
-		} else if (argv[2][0] == '-' && argv[2][1] == 'c' &&
-		 argv[2][2] == '\0') {
-			return c2i(argv[3]);
-		} else if (argv[2][0] == '-' && argv[2][1] == 'i' &&
-		 argv[2][2] == '\0') {
-			return i2c(argv[3]);
-		} else if (argv[2][0] == '-' && argv[2][1] == 'I' &&
-		 argv[2][2] == '\0') {
-			return i2m(argv[3]);
-		} else if (argv[2][0] == '-' && argv[2][1] == 'm' &&
-		 argv[2][2] == 'i') {
-			return m2k(argv[3]);
-		} else if (argv[2][0] == '-' && argv[2][1] == 'k' &&
-		 argv[2][2] == '\0') {
-			return k2m(argv[3]);
-		} else if (argv[2][0] == '-' && argv[2][1] == 'm' &&
-		 argv[2][2] == '\0') {
-			return m2i(argv[3]);
-		} else if (argv[2][0] == '-' && argv[2][1] == 'M' &&
-		 argv[2][2] == '\0') {
-			return m2f(argv[3]);
-		} else if (argv[2][0] == '-' && argv[2][1] == 'F' &&
-		 argv[2][2] == '\0') {
-			return f2m(argv[3]);
-		} else {
-			usage_conv();
-			return 1;
-		}
-	}
-
-	usage_conv();
-	return 1;
+	return usage_conv();
 }
