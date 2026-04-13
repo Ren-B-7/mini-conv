@@ -221,4 +221,7 @@ clean:
 	rm -f $(TARGET) $(LINKS)
 
 format:
-	clang-format -style=file:./clang-format -i conv.c
+	clang-format -style=file:./.clang-format -i conv.c
+
+lint:
+	clang-tidy conv.c -- $(ALL_CFLAGS)
