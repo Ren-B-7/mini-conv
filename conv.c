@@ -17,6 +17,8 @@ int usage_k2m(void);
 int usage_m2k(void);
 int usage_c2i(void);
 int usage_i2c(void);
+int usage_m2y(void);
+int usage_y2m(void);
 
 int c2f(char* input_c);
 int f2c(char* input_f);
@@ -30,6 +32,8 @@ int k2m(char* input_km);
 int m2k(char* input_mi);
 int c2i(char* input_cm);
 int i2c(char* input_in);
+int m2y(char* input_m);
+int y2m(char* input_y);
 
 /* Usage functions */
 int usage_conv(void)
@@ -42,7 +46,8 @@ int usage_conv(void)
 	 "       conv -w -k <value>   (Weight: Kilograms to Pounds)\n");
 	fprintf(stderr,
 	 "       conv -w -l <value>   (Weight: Pounds to Kilograms)\n");
-	fprintf(stderr, "       conv -d -c <value>   (Distance: Centimetres to Inches)\n");
+	fprintf(stderr, "       conv -d -y <value>   (Distance: Yards to Metres)\n");
+	fprintf(stderr, "       conv -d -me <value>  (Distance: Metres to Yards)\n");
 	fprintf(stderr, "       conv -d -i <value>   (Distance: Inches to Centimetres)\n");
 	fprintf(stderr, "       conv -d -I <value>   (Distance: Inches to Metres)\n");
 	fprintf(stderr, "       conv -d -mi <value>  (Distance: Miles to Kilometres)\n");
@@ -374,6 +379,56 @@ int i2c(char* input_in)
 	return 0;
 }
 
+int m2y(char* input_m)
+{
+	char* endptr;
+	double input;
+	double output;
+	errno = 0;
+
+	input = strtod(input_m, &endptr);
+
+	if (input_m == endptr || *endptr != '\0') {
+		fprintf(stderr, "Error: '%s' is not a valid number.\n", input_m);
+		return 1;
+	}
+
+	output = input * 1.09361;
+	printf("%.3f m = %.3f yd\n", input, output);
+	return 0;
+}
+
+int y2m(char* input_y)
+{
+	char* endptr;
+	double input;
+	double output;
+	errno = 0;
+
+	input = strtod(input_y, &endptr);
+
+	if (input_y == endptr || *endptr != '\0') {
+		fprintf(stderr, "Error: '%s' is not a valid number.\n", input_y);
+		return 1;
+	}
+
+	output = input / 1.09361;
+	printf("%.3f yd = %.3f m\n", input, output);
+	return 0;
+}
+
+int usage_m2y(void)
+{
+	fprintf(stderr, "Usage: m2y <value>\n");
+	return 1;
+}
+
+int usage_y2m(void)
+{
+	fprintf(stderr, "Usage: y2m <value>\n");
+	return 1;
+}
+
 /* Main function */
 int main(int argc, char** argv)
 {
@@ -483,6 +538,22 @@ int main(int argc, char** argv)
 		return i2c(argv[1]);
 	}
 
+	/* Check if invoked as m2y */
+	if (strcmp(progname, "m2y") == 0) {
+		if (argc != 2) {
+			return usage_m2y();
+		}
+		return m2y(argv[1]);
+	}
+
+	/* Check if invoked as y2m */
+	if (strcmp(progname, "y2m") == 0) {
+		if (argc != 2) {
+			return usage_y2m();
+		}
+		return y2m(argv[1]);
+	}
+
 	/* Otherwise use conv behavior with flags */
 	if (argc != 4) {
 		return usage_conv();
@@ -514,7 +585,11 @@ int main(int argc, char** argv)
 
 	/* Distance conversions */
 	if (argv[1][0] == '-' && argv[1][1] == 'd') {
-		if (argv[2][0] == '-' && argv[2][1] == 'c' && argv[2][2] == '\0') {
+		if (argv[2][0] == '-' && argv[2][1] == 'y' && argv[2][2] == '\0') {
+			return y2m(argv[3]);
+		} else if (argv[2][0] == '-' && argv[2][1] == 'm' && argv[2][2] == 'e') {
+			return m2y(argv[3]);
+		} else if (argv[2][0] == '-' && argv[2][1] == 'c' && argv[2][2] == '\0') {
 			return c2i(argv[3]);
 		} else if (argv[2][0] == '-' && argv[2][1] == 'i' && argv[2][2] == '\0') {
 			return i2c(argv[3]);

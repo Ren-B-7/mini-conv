@@ -61,7 +61,7 @@ ALL_CFLAGS = $(CFLAGS) $(HARDENING) $(OPTFLAGS)
 
 TARGET = conv
 # Symlinks: temperature, weight, distance
-LINKS = c2f f2c k2l l2k m2i i2m m2f f2m k2m m2k c2i i2c
+LINKS = c2f f2c k2l l2k m2i i2m m2f f2m k2m m2k c2i i2c m2y y2m
 
 .PHONY: all clean install test valgrind-test
 
@@ -84,6 +84,8 @@ $(LINKS): $(TARGET)
 	ln -sf $(TARGET) m2k
 	ln -sf $(TARGET) c2i
 	ln -sf $(TARGET) i2c
+	ln -sf $(TARGET) m2y
+	ln -sf $(TARGET) y2m
 
 install: $(TARGET) $(LINKS)
 	mkdir -p $(HOME)/.local/bin
@@ -100,6 +102,10 @@ install: $(TARGET) $(LINKS)
 	ln -sf $(TARGET) $(HOME)/.local/bin/m2k
 	ln -sf $(TARGET) $(HOME)/.local/bin/c2i
 	ln -sf $(TARGET) $(HOME)/.local/bin/i2c
+	ln -sf $(TARGET) $(HOME)/.local/bin/m2y
+	ln -sf $(TARGET) $(HOME)/.local/bin/y2m
+
+# Comprehensive tests
 
 # Comprehensive tests
 test: $(TARGET) $(LINKS)
@@ -187,6 +193,19 @@ test: $(TARGET) $(LINKS)
 		input=$${val%%:*}; expected=$${val#*:}; \
 		./i2c $$input | grep -q "$$expected" && echo "✓ i2c $$input passed" || echo "✗ i2c $$input failed"; \
 		./conv -d -i $$input | grep -q "$$expected" && echo "✓ conv -d -i $$input passed" || echo "✗ conv -d -i $$input failed"; \
+	done
+
+	@# Test m to y (m2y and conv -d -me)
+	@for val in "1:1.094" "10:10.936"; do \
+		input=$${val%%:*}; expected=$${val#*:}; \
+		./m2y $$input | grep -q "$$expected" && echo "✓ m2y $$input passed" || echo "✗ m2y $$input failed"; \
+		./conv -d -me $$input | grep -q "$$expected" && echo "✓ conv -d -me $$input passed" || echo "✗ conv -d -me $$input failed"; \
+	done
+	@# Test y to m (y2m and conv -d -y)
+	@for val in "1:0.914" "10:9.144"; do \
+		input=$${val%%:*}; expected=$${val#*:}; \
+		./y2m $$input | grep -q "$$expected" && echo "✓ y2m $$input passed" || echo "✗ y2m $$input failed"; \
+		./conv -d -y $$input | grep -q "$$expected" && echo "✓ conv -d -y $$input passed" || echo "✗ conv -d -y $$input failed"; \
 	done
 
 	@echo "All tests completed."

@@ -54,6 +54,12 @@ c2i {centimetres}         # Centimetres to Inches
 
 conv -d -i {inches}       # Inches to Centimetres
 i2c {inches}              # Inches to Centimetres
+
+conv -d -me {metres}      # Metres to Yards
+m2y {metres}              # Metres to Yards
+
+conv -d -y {yards}        # Yards to Metres
+y2m {yards}               # Yards to Metres
 ```
 
 ### Build and Install
