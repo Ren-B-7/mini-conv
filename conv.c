@@ -47,37 +47,39 @@ int y2m(char* input_y);
 int usage_conv(void)
 {
 	fprintf(stderr,
-	 "Usage: conv -t -c <value>   (Temperature: Celsius to Fahrenheit)\n");
+	 "Usage: conv -t -c  <value>   (Temperature: Celsius to Fahrenheit)\n");
 	fprintf(stderr,
-	 "       conv -t -f <value>   (Temperature: Fahrenheit to Celsius)\n");
+	 "       conv -t -f  <value>   (Temperature: Fahrenheit to Celsius)\n");
 	fprintf(stderr,
-	 "       conv -w -k <value>   (Weight: Kilograms to Pounds)\n");
+	 "       conv -w -k  <value>   (Weight: Kilograms to Pounds)\n");
 	fprintf(stderr,
-	 "       conv -w -l <value>   (Weight: Pounds to Kilograms)\n");
+	 "       conv -w -l  <value>   (Weight: Pounds to Kilograms)\n");
 	fprintf(stderr,
-	 "       conv -d -y <value>   (Distance: Yards to Metres)\n");
+	 "       conv -d -y  <value>   (Distance: Yards to Metres)\n");
 	fprintf(stderr,
-	 "       conv -d -me <value>  (Distance: Metres to Yards)\n");
+	 "       conv -d -me <value>   (Distance: Metres to Yards)\n");
 	fprintf(stderr,
-	 "       conv -d -i <value>   (Distance: Inches to Centimetres)\n");
+	 "       conv -d -i  <value>   (Distance: Inches to Centimetres)\n");
 	fprintf(stderr,
-	 "       conv -d -I <value>   (Distance: Inches to Metres)\n");
+	 "       conv -d -I  <value>   (Distance: Inches to Metres)\n");
 	fprintf(stderr,
-	 "       conv -d -mi <value>  (Distance: Miles to Kilometres)\n");
+	 "       conv -d -mi <value>   (Distance: Miles to Kilometres)\n");
 	fprintf(stderr,
-	 "       conv -d -k <value>   (Distance: Kilometres to Miles)\n");
+	 "       conv -d -k  <value>   (Distance: Kilometres to Miles)\n");
 	fprintf(stderr,
-	 "       conv -d -m <value>   (Distance: Metres to Inches)\n");
-	fprintf(stderr, "       conv -d -M <value>   (Distance: Metres to Feet)\n");
-	fprintf(stderr, "       conv -d -F <value>   (Distance: Feet to Metres)\n");
+	 "       conv -d -m  <value>   (Distance: Metres to Inches)\n");
 	fprintf(stderr,
-	 "       conv -d -K <value>   (Distance: Kilometres to Miles)\n");
+	 "       conv -d -M  <value>   (Distance: Metres to Feet)\n");
 	fprintf(stderr,
-	 "       conv -d -mi <value>  (Distance: Miles to Kilometres)\n");
+	 "       conv -d -F  <value>   (Distance: Feet to Metres)\n");
 	fprintf(stderr,
-	 "       conv -d -c <value>   (Distance: Centimetres to Inches)\n");
+	 "       conv -d -K  <value>   (Distance: Kilometres to Miles)\n");
 	fprintf(stderr,
-	 "       conv -d -i <value>  (Distance: Inches to Centimetres)\n");
+	 "       conv -d -mi <value>   (Distance: Miles to Kilometres)\n");
+	fprintf(stderr,
+	 "       conv -d -c  <value>   (Distance: Centimetres to Inches)\n");
+	fprintf(stderr,
+	 "       conv -d -i  <value>   (Distance: Inches to Centimetres)\n");
 	return 1;
 }
 
@@ -162,6 +164,20 @@ int usage_i2c(void)
 {
 	fprintf(stderr, "Usage: i2c <inch_value>\n");
 	fprintf(stderr, "Convert Inches to Centimetres\n");
+	return 1;
+}
+
+int usage_m2y(void)
+{
+	fprintf(stderr, "Usage: m2y <metre_value>\n");
+	fprintf(stderr, "Convert Metres to Yards\n");
+	return 1;
+}
+
+int usage_y2m(void)
+{
+	fprintf(stderr, "Usage: y2m <yard_value>\n");
+	fprintf(stderr, "Convert Yards to Metres\n");
 	return 1;
 }
 
@@ -432,19 +448,6 @@ int y2m(char* input_y)
 	return 0;
 }
 
-int usage_m2y(void)
-{
-	fprintf(stderr, "Usage: m2y <value>\n");
-	return 1;
-}
-
-int usage_y2m(void)
-{
-	fprintf(stderr, "Usage: y2m <value>\n");
-	return 1;
-}
-
-/* Main function */
 static int handle_temperature(int argc, char** argv)
 {
 	if (argc != 4) {
