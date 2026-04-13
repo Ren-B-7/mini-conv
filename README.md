@@ -1,6 +1,6 @@
 ## tempconv
 
-Small c based library, has 1 binary and 8 symlinks.
+Small c based library, has 1 binary and 12 symlinks.
 
 - binary
   - conv
@@ -13,6 +13,10 @@ Small c based library, has 1 binary and 8 symlinks.
   - i2m
   - m2f
   - f2m
+  - k2m
+  - m2k
+  - c2i
+  - i2c
 
 ```bash
 conv -t -c {celsius}      # Celsius to Fahrenheit
@@ -30,7 +34,7 @@ l2k {pounds}              # Pounds to Kilograms
 conv -d -m {metres}       # Metres to Inches
 m2i {metres}              # Metres to Inches
 
-conv -d -i {inches}       # Inches to Metres
+conv -d -I {inches}       # Inches to Metres
 i2m {inches}              # Inches to Metres
 
 conv -d -M {metres}       # Metres to Feet
@@ -38,6 +42,18 @@ m2f {metres}              # Metres to Feet
 
 conv -d -F {feet}         # Feet to Metres
 f2m {feet}                # Feet to Metres
+
+conv -d -k {kilometres}   # Kilometres to Miles
+k2m {kilometres}          # Kilometres to Miles
+
+conv -d -mi {miles}       # Miles to Kilometres
+m2k {miles}               # Miles to Kilometres
+
+conv -d -c {centimetres}  # Centimetres to Inches
+c2i {centimetres}         # Centimetres to Inches
+
+conv -d -i {inches}       # Inches to Centimetres
+i2c {inches}              # Inches to Centimetres
 ```
 
 ### Build and Install
@@ -52,6 +68,12 @@ make
 
 ```bash
 make test
+```
+
+**Run valgrind tests:**
+
+```bash
+make valgrind-test
 ```
 
 **Install to `~/.local/bin/`:**
@@ -69,4 +91,4 @@ make clean
 ### Further notes
 
 To change the link names the MakeFile and the C code has to be adjusted.  
-Handles double floating point operations and prints to 2 decimals
+Handles double floating point operations and prints to 3 decimals.
