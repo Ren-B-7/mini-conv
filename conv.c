@@ -51,7 +51,6 @@ static int run_temp_weight_symlinks(char* progname, int argc, char** argv);
 static int check_and_run(char* progname, int argc, char** argv,
  const char* name, int (*func)(char*), int (*usage)(void));
 static int run_distance_symlinks(char* progname, int argc, char** argv);
-static int run_conversion(char* progname, int argc, char** argv);
 static int handle_symlink(char* progname, int argc, char** argv);
 
 /* Usage functions */
@@ -581,7 +580,7 @@ static int run_distance_symlinks(char* progname, int argc, char** argv)
 	return -1;
 }
 
-static int run_conversion(char* progname, int argc, char** argv)
+static int handle_symlink(char* progname, int argc, char** argv)
 {
 	int result;
 
@@ -590,11 +589,6 @@ static int run_conversion(char* progname, int argc, char** argv)
 		return result;
 	}
 	return run_distance_symlinks(progname, argc, argv);
-}
-
-static int handle_symlink(char* progname, int argc, char** argv)
-{
-	return run_conversion(progname, argc, argv);
 }
 
 /* Utils */
