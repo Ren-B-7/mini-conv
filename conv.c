@@ -46,13 +46,20 @@ int usage_conv(void)
 	 "       conv -w -k <value>   (Weight: Kilograms to Pounds)\n");
 	fprintf(stderr,
 	 "       conv -w -l <value>   (Weight: Pounds to Kilograms)\n");
-	fprintf(stderr, "       conv -d -y <value>   (Distance: Yards to Metres)\n");
-	fprintf(stderr, "       conv -d -me <value>  (Distance: Metres to Yards)\n");
-	fprintf(stderr, "       conv -d -i <value>   (Distance: Inches to Centimetres)\n");
-	fprintf(stderr, "       conv -d -I <value>   (Distance: Inches to Metres)\n");
-	fprintf(stderr, "       conv -d -mi <value>  (Distance: Miles to Kilometres)\n");
-	fprintf(stderr, "       conv -d -k <value>   (Distance: Kilometres to Miles)\n");
-	fprintf(stderr, "       conv -d -m <value>   (Distance: Metres to Inches)\n");
+	fprintf(stderr,
+	 "       conv -d -y <value>   (Distance: Yards to Metres)\n");
+	fprintf(stderr,
+	 "       conv -d -me <value>  (Distance: Metres to Yards)\n");
+	fprintf(stderr,
+	 "       conv -d -i <value>   (Distance: Inches to Centimetres)\n");
+	fprintf(stderr,
+	 "       conv -d -I <value>   (Distance: Inches to Metres)\n");
+	fprintf(stderr,
+	 "       conv -d -mi <value>  (Distance: Miles to Kilometres)\n");
+	fprintf(stderr,
+	 "       conv -d -k <value>   (Distance: Kilometres to Miles)\n");
+	fprintf(stderr,
+	 "       conv -d -m <value>   (Distance: Metres to Inches)\n");
 	fprintf(stderr, "       conv -d -M <value>   (Distance: Metres to Feet)\n");
 	fprintf(stderr, "       conv -d -F <value>   (Distance: Feet to Metres)\n");
 	fprintf(stderr,
@@ -587,23 +594,32 @@ int main(int argc, char** argv)
 	if (argv[1][0] == '-' && argv[1][1] == 'd') {
 		if (argv[2][0] == '-' && argv[2][1] == 'y' && argv[2][2] == '\0') {
 			return y2m(argv[3]);
-		} else if (argv[2][0] == '-' && argv[2][1] == 'm' && argv[2][2] == 'e') {
+		} else if (argv[2][0] == '-' && argv[2][1] == 'm' &&
+		 argv[2][2] == 'e') {
 			return m2y(argv[3]);
-		} else if (argv[2][0] == '-' && argv[2][1] == 'c' && argv[2][2] == '\0') {
+		} else if (argv[2][0] == '-' && argv[2][1] == 'c' &&
+		 argv[2][2] == '\0') {
 			return c2i(argv[3]);
-		} else if (argv[2][0] == '-' && argv[2][1] == 'i' && argv[2][2] == '\0') {
+		} else if (argv[2][0] == '-' && argv[2][1] == 'i' &&
+		 argv[2][2] == '\0') {
 			return i2c(argv[3]);
-		} else if (argv[2][0] == '-' && argv[2][1] == 'I' && argv[2][2] == '\0') {
+		} else if (argv[2][0] == '-' && argv[2][1] == 'I' &&
+		 argv[2][2] == '\0') {
 			return i2m(argv[3]);
-		} else if (argv[2][0] == '-' && argv[2][1] == 'm' && argv[2][2] == 'i') {
+		} else if (argv[2][0] == '-' && argv[2][1] == 'm' &&
+		 argv[2][2] == 'i') {
 			return m2k(argv[3]);
-		} else if (argv[2][0] == '-' && argv[2][1] == 'k' && argv[2][2] == '\0') {
+		} else if (argv[2][0] == '-' && argv[2][1] == 'k' &&
+		 argv[2][2] == '\0') {
 			return k2m(argv[3]);
-		} else if (argv[2][0] == '-' && argv[2][1] == 'm' && argv[2][2] == '\0') {
+		} else if (argv[2][0] == '-' && argv[2][1] == 'm' &&
+		 argv[2][2] == '\0') {
 			return m2i(argv[3]);
-		} else if (argv[2][0] == '-' && argv[2][1] == 'M' && argv[2][2] == '\0') {
+		} else if (argv[2][0] == '-' && argv[2][1] == 'M' &&
+		 argv[2][2] == '\0') {
 			return m2f(argv[3]);
-		} else if (argv[2][0] == '-' && argv[2][1] == 'F' && argv[2][2] == '\0') {
+		} else if (argv[2][0] == '-' && argv[2][1] == 'F' &&
+		 argv[2][2] == '\0') {
 			return f2m(argv[3]);
 		} else {
 			usage_conv();

@@ -219,3 +219,6 @@ valgrind-test: $(TARGET) $(LINKS)
 
 clean:
 	rm -f $(TARGET) $(LINKS)
+
+format:
+	clang-format -style=file:./clang-format -i conv.c
