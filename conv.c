@@ -82,7 +82,8 @@ int usage_conv(void)
 
 int usage_c2f(void)
 {
-	fprintf(stderr, "Usage: c2f <celsius_value>\nConvert Celsius to Fahrenheit\n");
+	fprintf(stderr,
+	 "Usage: c2f <celsius_value>\nConvert Celsius to Fahrenheit\n");
 	return 1;
 }
 
@@ -95,7 +96,8 @@ int usage_f2c(void)
 
 int usage_k2l(void)
 {
-	fprintf(stderr, "Usage: k2l <kilogram_value>\nConvert Kilograms to Pounds\n");
+	fprintf(stderr,
+	 "Usage: k2l <kilogram_value>\nConvert Kilograms to Pounds\n");
 	return 1;
 }
 
@@ -131,7 +133,8 @@ int usage_f2m(void)
 
 int usage_k2m(void)
 {
-	fprintf(stderr, "Usage: k2m <kilometre_value>\nConvert Kilometres to Miles\n");
+	fprintf(stderr,
+	 "Usage: k2m <kilometre_value>\nConvert Kilometres to Miles\n");
 	return 1;
 }
 
