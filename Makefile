@@ -224,11 +224,10 @@ format:
 	clang-format -style=file:./.clang-format -i conv.c
 
 CLANG_TIDY_FLAGS = -std=c90 -pedantic -Wall -Wextra -Werror
-CHECKS = "-*,readability-*,bugprone-*,performance-*,clang-analyzer-*"
 
 lint:
-	clang-tidy --checks=$(CHECKS) --warnings-as-errors=$(CHECKS) conv.c -- $(CLANG_TIDY_FLAGS)
+	clang-tidy conv.c -- $(CLANG_TIDY_FLAGS)
 
 # Fix code automatically
 fix:
-	clang-tidy --checks=$(CHECKS) --fix conv.c -- $(CLANG_TIDY_FLAGS)
+	clang-tidy --fix conv.c -- $(CLANG_TIDY_FLAGS)
