@@ -557,7 +557,8 @@ static int run_temp_weight_symlinks(char* progname, int argc, char** argv)
 	return -1;
 }
 
-static int check_and_run(char* progname, int argc, char** argv, const char* name, int (*func)(char*), int (*usage)(void))
+static int check_and_run(char* progname, int argc, char** argv,
+ const char* name, int (*func)(char*), int (*usage)(void))
 {
 	if (strcmp(progname, name) == 0) {
 		if (argc != 2) {
