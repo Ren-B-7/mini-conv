@@ -43,141 +43,126 @@ int i2c(char* input_in);
 int m2y(char* input_m);
 int y2m(char* input_y);
 
+/* Static helper declarations */
+static int handle_temperature(int argc, char** argv);
+static int handle_weight(int argc, char** argv);
+static int handle_distance(int argc, char** argv);
+static int run_temp_weight_symlinks(char* progname, int argc, char** argv);
+static int check_and_run(char* progname, int argc, char** argv,
+ const char* name, int (*func)(char*), int (*usage)(void));
+static int run_distance_symlinks(char* progname, int argc, char** argv);
+static int run_conversion(char* progname, int argc, char** argv);
+static int handle_symlink(char* progname, int argc, char** argv);
+
 /* Usage functions */
 int usage_conv(void)
 {
 	fprintf(stderr,
-	 "Usage: conv -t -c  <value>   (Temperature: Celsius to Fahrenheit)\n");
-	fprintf(stderr,
-	 "       conv -t -f  <value>   (Temperature: Fahrenheit to Celsius)\n");
-	fprintf(stderr,
-	 "       conv -w -k  <value>   (Weight: Kilograms to Pounds)\n");
-	fprintf(stderr,
-	 "       conv -w -l  <value>   (Weight: Pounds to Kilograms)\n");
-	fprintf(stderr,
-	 "       conv -d -y  <value>   (Distance: Yards to Metres)\n");
-	fprintf(stderr,
-	 "       conv -d -me <value>   (Distance: Metres to Yards)\n");
-	fprintf(stderr,
+	 "Usage: conv -t -c  <value>   (Temperature: Celsius to Fahrenheit)\n"
+	 "       conv -t -f  <value>   (Temperature: Fahrenheit to Celsius)\n"
+	 "       conv -w -k  <value>   (Weight: Kilograms to Pounds)\n"
+	 "       conv -w -l  <value>   (Weight: Pounds to Kilograms)\n"
+	 "       conv -d -y  <value>   (Distance: Yards to Metres)\n"
+	 "       conv -d -me <value>   (Distance: Metres to Yards)\n"
 	 "       conv -d -i  <value>   (Distance: Inches to Centimetres)\n");
 	fprintf(stderr,
-	 "       conv -d -I  <value>   (Distance: Inches to Metres)\n");
-	fprintf(stderr,
-	 "       conv -d -mi <value>   (Distance: Miles to Kilometres)\n");
-	fprintf(stderr,
-	 "       conv -d -k  <value>   (Distance: Kilometres to Miles)\n");
-	fprintf(stderr,
-	 "       conv -d -m  <value>   (Distance: Metres to Inches)\n");
-	fprintf(stderr,
-	 "       conv -d -M  <value>   (Distance: Metres to Feet)\n");
-	fprintf(stderr,
-	 "       conv -d -F  <value>   (Distance: Feet to Metres)\n");
-	fprintf(stderr,
+	 "       conv -d -I  <value>   (Distance: Inches to Metres)\n"
+	 "       conv -d -mi <value>   (Distance: Miles to Kilometres)\n"
+	 "       conv -d -k  <value>   (Distance: Kilometres to Miles)\n"
+	 "       conv -d -m  <value>   (Distance: Metres to Inches)\n"
+	 "       conv -d -M  <value>   (Distance: Metres to Feet)\n"
+	 "       conv -d -F  <value>   (Distance: Feet to Metres)\n"
 	 "       conv -d -K  <value>   (Distance: Kilometres to Miles)\n");
 	fprintf(stderr,
-	 "       conv -d -mi <value>   (Distance: Miles to Kilometres)\n");
-	fprintf(stderr,
-	 "       conv -d -c  <value>   (Distance: Centimetres to Inches)\n");
-	fprintf(stderr,
+	 "       conv -d -mi <value>   (Distance: Miles to Kilometres)\n"
+	 "       conv -d -c  <value>   (Distance: Centimetres to Inches)\n"
 	 "       conv -d -i  <value>   (Distance: Inches to Centimetres)\n");
 	return 1;
 }
 
 int usage_c2f(void)
 {
-	fprintf(stderr, "Usage: c2f <celsius_value>\n");
-	fprintf(stderr, "Convert Celsius to Fahrenheit\n");
+	fprintf(stderr, "Usage: c2f <celsius_value>\nConvert Celsius to Fahrenheit\n");
 	return 1;
 }
 
 int usage_f2c(void)
 {
-	fprintf(stderr, "Usage: f2c <fahrenheit_value>\n");
-	fprintf(stderr, "Convert Fahrenheit to Celsius\n");
+	fprintf(stderr,
+	 "Usage: f2c <fahrenheit_value>\nConvert Fahrenheit to Celsius\n");
 	return 1;
 }
 
 int usage_k2l(void)
 {
-	fprintf(stderr, "Usage: k2l <kilogram_value>\n");
-	fprintf(stderr, "Convert Kilograms to Pounds\n");
+	fprintf(stderr, "Usage: k2l <kilogram_value>\nConvert Kilograms to Pounds\n");
 	return 1;
 }
 
 int usage_l2k(void)
 {
-	fprintf(stderr, "Usage: l2k <pound_value>\n");
-	fprintf(stderr, "Convert Pounds to Kilograms\n");
+	fprintf(stderr, "Usage: l2k <pound_value>\nConvert Pounds to Kilograms\n");
 	return 1;
 }
 
 int usage_m2i(void)
 {
-	fprintf(stderr, "Usage: m2i <metre_value>\n");
-	fprintf(stderr, "Convert Metres to Inches\n");
+	fprintf(stderr, "Usage: m2i <metre_value>\nConvert Metres to Inches\n");
 	return 1;
 }
 
 int usage_i2m(void)
 {
-	fprintf(stderr, "Usage: i2m <inch_value>\n");
-	fprintf(stderr, "Convert Inches to Metres\n");
+	fprintf(stderr, "Usage: i2m <inch_value>\nConvert Inches to Metres\n");
 	return 1;
 }
 
 int usage_m2f(void)
 {
-	fprintf(stderr, "Usage: m2f <metre_value>\n");
-	fprintf(stderr, "Convert Metres to Feet\n");
+	fprintf(stderr, "Usage: m2f <metre_value>\nConvert Metres to Feet\n");
 	return 1;
 }
 
 int usage_f2m(void)
 {
-	fprintf(stderr, "Usage: f2m <foot_value>\n");
-	fprintf(stderr, "Convert Feet to Metres\n");
+	fprintf(stderr, "Usage: f2m <foot_value>\nConvert Feet to Metres\n");
 	return 1;
 }
 
 int usage_k2m(void)
 {
-	fprintf(stderr, "Usage: k2m <kilometre_value>\n");
-	fprintf(stderr, "Convert Kilometres to Miles\n");
+	fprintf(stderr, "Usage: k2m <kilometre_value>\nConvert Kilometres to Miles\n");
 	return 1;
 }
 
 int usage_m2k(void)
 {
-	fprintf(stderr, "Usage: m2k <mile_value>\n");
-	fprintf(stderr, "Convert Miles to Kilometres\n");
+	fprintf(stderr, "Usage: m2k <mile_value>\nConvert Miles to Kilometres\n");
 	return 1;
 }
 
 int usage_c2i(void)
 {
-	fprintf(stderr, "Usage: c2i <centimetre_value>\n");
-	fprintf(stderr, "Convert Centimetres to Inches\n");
+	fprintf(stderr,
+	 "Usage: c2i <centimetre_value>\nConvert Centimetres to Inches\n");
 	return 1;
 }
 
 int usage_i2c(void)
 {
-	fprintf(stderr, "Usage: i2c <inch_value>\n");
-	fprintf(stderr, "Convert Inches to Centimetres\n");
+	fprintf(stderr, "Usage: i2c <inch_value>\nConvert Inches to Centimetres\n");
 	return 1;
 }
 
 int usage_m2y(void)
 {
-	fprintf(stderr, "Usage: m2y <metre_value>\n");
-	fprintf(stderr, "Convert Metres to Yards\n");
+	fprintf(stderr, "Usage: m2y <metre_value>\nConvert Metres to Yards\n");
 	return 1;
 }
 
 int usage_y2m(void)
 {
-	fprintf(stderr, "Usage: y2m <yard_value>\n");
-	fprintf(stderr, "Convert Yards to Metres\n");
+	fprintf(stderr, "Usage: y2m <yard_value>\nConvert Yards to Metres\n");
 	return 1;
 }
 
@@ -448,6 +433,7 @@ int y2m(char* input_y)
 	return 0;
 }
 
+/* Flag checking */
 static int handle_temperature(int argc, char** argv)
 {
 	if (argc != 4) {
@@ -482,38 +468,6 @@ static int handle_weight(int argc, char** argv)
 	return 1;
 }
 
-static int handle_distance_ext(int argc __attribute__((unused)), char** argv)
-{
-	if (argv[2][0] == '-' && argv[2][1] == 'm' && argv[2][2] == 'e') {
-		return m2y(argv[3]);
-	}
-	if (argv[2][0] == '-' && argv[2][1] == 'c' && argv[2][2] == '\0') {
-		return c2i(argv[3]);
-	}
-	if (argv[2][0] == '-' && argv[2][1] == 'i' && argv[2][2] == '\0') {
-		return i2c(argv[3]);
-	}
-	if (argv[2][0] == '-' && argv[2][1] == 'I' && argv[2][2] == '\0') {
-		return i2m(argv[3]);
-	}
-	if (argv[2][0] == '-' && argv[2][1] == 'm' && argv[2][2] == 'i') {
-		return m2k(argv[3]);
-	}
-	if (argv[2][0] == '-' && argv[2][1] == 'k' && argv[2][2] == '\0') {
-		return k2m(argv[3]);
-	}
-	if (argv[2][0] == '-' && argv[2][1] == 'm' && argv[2][2] == '\0') {
-		return m2i(argv[3]);
-	}
-	if (argv[2][0] == '-' && argv[2][1] == 'M' && argv[2][2] == '\0') {
-		return m2f(argv[3]);
-	}
-	if (argv[2][0] == '-' && argv[2][1] == 'F' && argv[2][2] == '\0') {
-		return f2m(argv[3]);
-	}
-	return 1;
-}
-
 static int handle_distance(int argc, char** argv)
 {
 	if (argc != 4) {
@@ -523,51 +477,57 @@ static int handle_distance(int argc, char** argv)
 		if (argv[2][0] == '-' && argv[2][1] == 'y' && argv[2][2] == '\0') {
 			return y2m(argv[3]);
 		}
-		if (handle_distance_ext(argc, argv) == 0) {
-			return 0;
+		if (argv[2][0] == '-' && argv[2][1] == 'm' && argv[2][2] == 'e') {
+			return m2y(argv[3]);
+		}
+		if (argv[2][0] == '-' && argv[2][1] == 'c' && argv[2][2] == '\0') {
+			return c2i(argv[3]);
+		}
+		if (argv[2][0] == '-' && argv[2][1] == 'i' && argv[2][2] == '\0') {
+			return i2c(argv[3]);
+		}
+		if (argv[2][0] == '-' && argv[2][1] == 'I' && argv[2][2] == '\0') {
+			return i2m(argv[3]);
+		}
+		if (argv[2][0] == '-' && argv[2][1] == 'm' && argv[2][2] == 'i') {
+			return m2k(argv[3]);
+		}
+		if (argv[2][0] == '-' && argv[2][1] == 'k' && argv[2][2] == '\0') {
+			return k2m(argv[3]);
+		}
+		if (argv[2][0] == '-' && argv[2][1] == 'm' && argv[2][2] == '\0') {
+			return m2i(argv[3]);
+		}
+		if (argv[2][0] == '-' && argv[2][1] == 'M' && argv[2][2] == '\0') {
+			return m2f(argv[3]);
+		}
+		if (argv[2][0] == '-' && argv[2][1] == 'F' && argv[2][2] == '\0') {
+			return f2m(argv[3]);
 		}
 	}
 	usage_conv();
 	return 1;
 }
 
+/* Symlink checking */
 static int run_temp_weight_symlinks(char* progname, int argc, char** argv)
 {
-	if (strcmp(progname, "c2f") == 0) {
-		if (argc != 2) {
-			return usage_c2f();
-		}
-		return c2f(argv[1]);
+	int result;
+	result = check_and_run(progname, argc, argv, "c2f", c2f, usage_c2f);
+	if (result != -1) {
+		return result;
 	}
-	if (strcmp(progname, "f2c") == 0) {
-		if (argc != 2) {
-			return usage_f2c();
-		}
-		return f2c(argv[1]);
+	result = check_and_run(progname, argc, argv, "f2c", f2c, usage_f2c);
+	if (result != -1) {
+		return result;
 	}
-	if (strcmp(progname, "k2l") == 0) {
-		if (argc != 2) {
-			return usage_k2l();
-		}
-		return k2l(argv[1]);
+	result = check_and_run(progname, argc, argv, "k2l", k2l, usage_k2l);
+	if (result != -1) {
+		return result;
 	}
-	if (strcmp(progname, "l2k") == 0) {
-		if (argc != 2) {
-			return usage_l2k();
-		}
-		return l2k(argv[1]);
-	}
-	return -1;
-}
-
-static int check_and_run(char* progname, int argc, char** argv,
- const char* name, int (*func)(char*), int (*usage)(void))
-{
-	if (strcmp(progname, name) == 0) {
-		if (argc != 2) {
-			return usage();
-		}
-		return func(argv[1]);
+	result = check_and_run(progname, argc, argv, "l2k", l2k, usage_l2k);
+	if (result != -1) {
+		return result;
 	}
 	return -1;
 }
@@ -634,6 +594,20 @@ static int handle_symlink(char* progname, int argc, char** argv)
 	return run_conversion(progname, argc, argv);
 }
 
+/* Utils */
+static int check_and_run(char* progname, int argc, char** argv,
+ const char* name, int (*func)(char*), int (*usage)(void))
+{
+	if (strcmp(progname, name) == 0) {
+		if (argc != 2) {
+			return usage();
+		}
+		return func(argv[1]);
+	}
+	return -1;
+}
+
+/* Main */
 int main(int argc, char** argv)
 {
 	char* progname;

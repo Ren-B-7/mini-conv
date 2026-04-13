@@ -51,10 +51,11 @@ LDFLAGS = -Wl,-z,relro \
           -Wl,-z,now \
           -Wl,-z,noexecstack \
           -Wl,-z,separate-code \
-          -pie
+          -pie \
+          -flto
 
 # Optimization
-OPTFLAGS = -O2 -march=native
+OPTFLAGS = -O3 -march=native -flto
 
 # Combine all flags
 ALL_CFLAGS = $(CFLAGS) $(HARDENING) $(OPTFLAGS)
