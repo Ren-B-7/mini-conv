@@ -17,6 +17,8 @@ Small c based library, has 1 binary and 12 symlinks.
   - m2k
   - c2i
   - i2c
+  - y2m
+  - m2y
 
 ```bash
 conv -t -c {celsius}      # Celsius to Fahrenheit
