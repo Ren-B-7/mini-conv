@@ -37,7 +37,8 @@ CFLAGS = -std=c90 \
          -Wfloat-equal \
          -Wpointer-arith \
          -Wbad-function-cast \
-         -Wold-style-definition
+         -Wold-style-definition \
+         -I src
 
 # Security hardening flags
 HARDENING = -D_FORTIFY_SOURCE=2 \
@@ -60,56 +61,66 @@ OPTFLAGS = -O3 -march=native -flto
 # Combine all flags
 ALL_CFLAGS = $(CFLAGS) $(HARDENING) $(OPTFLAGS)
 
-TARGET = conv
-# Symlinks: temperature, weight, distance
-LINKS = c2f f2c k2l l2k m2i i2m m2f f2m k2m m2k c2i i2c m2y y2m
+# Output directories
+BIN_DIR = bin
+OBJ_DIR = bin/obj
+SRC_DIR = src
 
-.PHONY: all clean install test valgrind-test
+TARGET = $(BIN_DIR)/conv
+TARGET_INSTALL_DIR = $(TARGET_INSTALL_DIR)/
+TARGET_INSTALL = $(TARGET_INSTALL_DIR)/conv
 
-all: $(TARGET) $(LINKS)
+.PHONY: all clean install test valgrind-test format lint fix
 
-$(TARGET): conv.c
-	$(CC) $(ALL_CFLAGS) $(LDFLAGS) -o $(TARGET) conv.c
+all: $(TARGET) $(BIN_DIR)/.symlinks
 
-# Create symlinks for all conversion tools
-$(LINKS): $(TARGET)
-	ln -sf $(TARGET) c2f
-	ln -sf $(TARGET) f2c
-	ln -sf $(TARGET) k2l
-	ln -sf $(TARGET) l2k
-	ln -sf $(TARGET) m2i
-	ln -sf $(TARGET) i2m
-	ln -sf $(TARGET) m2f
-	ln -sf $(TARGET) f2m
-	ln -sf $(TARGET) k2m
-	ln -sf $(TARGET) m2k
-	ln -sf $(TARGET) c2i
-	ln -sf $(TARGET) i2c
-	ln -sf $(TARGET) m2y
-	ln -sf $(TARGET) y2m
+$(BIN_DIR):
+	mkdir -p $(BIN_DIR)
 
-install: $(TARGET) $(LINKS)
-	mkdir -p $(HOME)/.local/bin
-	install -m 755 $(TARGET) $(HOME)/.local/bin/
-	ln -sf $(TARGET) $(HOME)/.local/bin/c2f
-	ln -sf $(TARGET) $(HOME)/.local/bin/f2c
-	ln -sf $(TARGET) $(HOME)/.local/bin/k2l
-	ln -sf $(TARGET) $(HOME)/.local/bin/l2k
-	ln -sf $(TARGET) $(HOME)/.local/bin/m2i
-	ln -sf $(TARGET) $(HOME)/.local/bin/i2m
-	ln -sf $(TARGET) $(HOME)/.local/bin/m2f
-	ln -sf $(TARGET) $(HOME)/.local/bin/f2m
-	ln -sf $(TARGET) $(HOME)/.local/bin/k2m
-	ln -sf $(TARGET) $(HOME)/.local/bin/m2k
-	ln -sf $(TARGET) $(HOME)/.local/bin/c2i
-	ln -sf $(TARGET) $(HOME)/.local/bin/i2c
-	ln -sf $(TARGET) $(HOME)/.local/bin/m2y
-	ln -sf $(TARGET) $(HOME)/.local/bin/y2m
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
+
+$(TARGET): $(BIN_DIR) $(OBJ_DIR) $(SRC_DIR)/conv.c
+	$(CC) $(ALL_CFLAGS) $(LDFLAGS) -o $(TARGET) $(SRC_DIR)/conv.c
+
+# Create symlinks for all conversion tools using a sentinel file
+$(BIN_DIR)/.symlinks: $(TARGET) | $(BIN_DIR)
+	ln -sf conv $(BIN_DIR)/c2f
+	ln -sf conv $(BIN_DIR)/f2c
+	ln -sf conv $(BIN_DIR)/k2l
+	ln -sf conv $(BIN_DIR)/l2k
+	ln -sf conv $(BIN_DIR)/m2i
+	ln -sf conv $(BIN_DIR)/i2m
+	ln -sf conv $(BIN_DIR)/m2f
+	ln -sf conv $(BIN_DIR)/f2m
+	ln -sf conv $(BIN_DIR)/k2m
+	ln -sf conv $(BIN_DIR)/m2k
+	ln -sf conv $(BIN_DIR)/c2i
+	ln -sf conv $(BIN_DIR)/i2c
+	ln -sf conv $(BIN_DIR)/m2y
+	ln -sf conv $(BIN_DIR)/y2m
+	@touch $(BIN_DIR)/.symlinks
+
+install: $(TARGET) $(BIN_DIR)/.symlinks
+	mkdir -p $(TARGET_INSTALL_DIR)
+	install -m 755 $(TARGET) $(TARGET_INSTALL_DIR)
+	ln -sf $(TARGET_INSTALL) $(TARGET_INSTALL_DIR)/c2f
+	ln -sf $(TARGET_INSTALL) $(TARGET_INSTALL_DIR)/f2c
+	ln -sf $(TARGET_INSTALL) $(TARGET_INSTALL_DIR)/k2l
+	ln -sf $(TARGET_INSTALL) $(TARGET_INSTALL_DIR)/l2k
+	ln -sf $(TARGET_INSTALL) $(TARGET_INSTALL_DIR)/m2i
+	ln -sf $(TARGET_INSTALL) $(TARGET_INSTALL_DIR)/i2m
+	ln -sf $(TARGET_INSTALL) $(TARGET_INSTALL_DIR)/m2f
+	ln -sf $(TARGET_INSTALL) $(TARGET_INSTALL_DIR)/f2m
+	ln -sf $(TARGET_INSTALL) $(TARGET_INSTALL_DIR)/k2m
+	ln -sf $(TARGET_INSTALL) $(TARGET_INSTALL_DIR)/m2k
+	ln -sf $(TARGET_INSTALL) $(TARGET_INSTALL_DIR)/c2i
+	ln -sf $(TARGET_INSTALL) $(TARGET_INSTALL_DIR)/i2c
+	ln -sf $(TARGET_INSTALL) $(TARGET_INSTALL_DIR)/m2y
+	ln -sf $(TARGET_INSTALL) $(TARGET_INSTALL_DIR)/y2m
 
 # Comprehensive tests
-
-# Comprehensive tests
-test: $(TARGET) $(LINKS)
+test: $(TARGET) $(BIN_DIR)/.symlinks
 	@echo "Testing temperature conversions..."
 	@# Test C to F (c2f and conv -t -c)
 	@for val in "100:212.000" "90:194.000" "80:176.000" "70:158.000" "60:140.000" "50:122.000" \
@@ -212,23 +223,25 @@ test: $(TARGET) $(LINKS)
 	@echo "All tests completed."
 
 # Valgrind test
-valgrind-test: $(TARGET) $(LINKS)
-	valgrind --leak-check=full --error-exitcode=1 ./k2m 1
-	valgrind --leak-check=full --error-exitcode=1 ./m2k 1
-	valgrind --leak-check=full --error-exitcode=1 ./c2i 1
-	valgrind --leak-check=full --error-exitcode=1 ./i2c 1
-
-clean:
-	rm -f $(TARGET) $(LINKS)
+valgrind-test: $(TARGET) $(BIN_DIR)/.symlinks
+	valgrind --leak-check=full --error-exitcode=1 ./bin/k2m 1
+	valgrind --leak-check=full --error-exitcode=1 ./bin/m2k 1
+	valgrind --leak-check=full --error-exitcode=1 ./bin/c2i 1
+	valgrind --leak-check=full --error-exitcode=1 ./bin/i2c 1
 
 format:
-	clang-format -style=file:./.clang-format -i conv.c
+	clang-format -style=file:./.clang-format -i $(SRC_DIR)/conv.c
+	mbake format --config ./.bake.toml Makefile
 
 CLANG_TIDY_FLAGS = -std=c90 -pedantic -Wall -Wextra -Werror
 
 lint:
-	clang-tidy conv.c -- $(CLANG_TIDY_FLAGS)
+	clang-tidy $(SRC_DIR)/conv.c -- $(CLANG_TIDY_FLAGS)
+	mbake validate --config ./.bake.toml Makefile
 
 # Fix code automatically
 fix:
-	clang-tidy --fix conv.c -- $(CLANG_TIDY_FLAGS)
+	clang-tidy --fix $(SRC_DIR)/conv.c -- $(CLANG_TIDY_FLAGS)
+
+clean:
+	rm -rf $(BIN_DIR)
