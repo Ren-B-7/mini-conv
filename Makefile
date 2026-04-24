@@ -67,7 +67,7 @@ OBJ_DIR = bin/obj
 SRC_DIR = src
 
 TARGET = $(BIN_DIR)/conv
-TARGET_INSTALL_DIR = $(TARGET_INSTALL_DIR)/
+TARGET_INSTALL_DIR = $(HOME)/.local/bin/
 TARGET_INSTALL = $(TARGET_INSTALL_DIR)/conv
 
 .PHONY: all clean install test valgrind-test format lint fix
