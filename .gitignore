@@ -1,27 +1,88 @@
 # Build artifacts
-conv
-c2f
-f2c
-k2l
-l2k
-m2i
-i2m
-m2f
-f2m
-k2m
-m2k
-c2i
-i2c
-m2y
-y2m
-
-# Object files
 *.o
 *.obj
+*.ko
+*.elf
+*.so
+*.so.*
+*.dylib
+*.a
+*.la
+*.lo
+*.lib
+*.dll
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+*.gch
+*.pch
 
-# Debug files
+# Build directories
+build/
+out/
+dist/
+bin/
+obj/
+target/
+.tmp_versions/
+
+# Debugging & profiling
 *.dSYM/
 *.su
+*.idb
+*.pdb
+*.dwo
+*.gcno
+*.gcda
+*.gcov
+*.prof
+*.profdata
+*.cov
+*.dyn
 
-# Others
-.tmp_versions/
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.json
+
+# Autotools
+autom4te.cache/
+configure
+install-sh
+missing
+py-compile
+symlink-tree
+ypch/
+aclocal.m4
+build-aux/
+compile
+config.guess
+config.log
+config.rpath
+config.status
+depcomp
+ltmain.sh
+mkinstalldirs
+test-driver
+
+# Editor/IDE
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*~
+*.bak
+*.orig
+
+# Logs & temp
+*.log
+*.tmp
+modules.order
+Module.symvers
+Mkfile.old
+dkms.conf
