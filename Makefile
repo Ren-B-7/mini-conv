@@ -60,5 +60,9 @@ $(OBJ_DIR)/include/%.o: $(SRC_DIR)/include/%.c
 	mkdir -p $(dir $@)
 	$(CC) $(ALL_CFLAGS) -c $< -o $@
 
+test:
+	$(CC) -Itests/include tests/test_placeholder.c -o tests/runner
+	./tests/runner
+
 clean:
 	rm -rf $(BIN_DIR)
