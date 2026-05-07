@@ -15,7 +15,9 @@ TARGET = $(BIN_DIR)/conv
 SRCS = $(SRC_DIR)/conv.c $(SRC_DIR)/include/set.c
 OBJS = $(OBJ_DIR)/conv.o $(OBJ_DIR)/include/set.o
 
-.PHONY: all clean install format lint fix
+BINDIR = $(HOME)/.local//bin
+
+.PHONY: all clean install uninstall format lint fix
 
 all: $(TARGET) $(BIN_DIR)/.symlinks
 
@@ -34,6 +36,41 @@ $(BIN_DIR)/.symlinks: $(TARGET)
 	ln -sf conv $(BIN_DIR)/i2c
 	ln -sf conv $(BIN_DIR)/m2y
 	ln -sf conv $(BIN_DIR)/y2m
+
+install: all
+	mkdir -p $(BINDIR)
+	install -m 755 $(TARGET) $(BINDIR)/conv
+	ln -sf conv $(BINDIR)/c2f
+	ln -sf conv $(BINDIR)/f2c
+	ln -sf conv $(BINDIR)/k2l
+	ln -sf conv $(BINDIR)/l2k
+	ln -sf conv $(BINDIR)/m2i
+	ln -sf conv $(BINDIR)/i2m
+	ln -sf conv $(BINDIR)/m2f
+	ln -sf conv $(BINDIR)/f2m
+	ln -sf conv $(BINDIR)/k2m
+	ln -sf conv $(BINDIR)/m2k
+	ln -sf conv $(BINDIR)/c2i
+	ln -sf conv $(BINDIR)/i2c
+	ln -sf conv $(BINDIR)/m2y
+	ln -sf conv $(BINDIR)/y2m
+
+uninstall:
+	rm -f $(BINDIR)/conv
+	rm -f $(BINDIR)/c2f
+	rm -f $(BINDIR)/f2c
+	rm -f $(BINDIR)/k2l
+	rm -f $(BINDIR)/l2k
+	rm -f $(BINDIR)/m2i
+	rm -f $(BINDIR)/i2m
+	rm -f $(BINDIR)/m2f
+	rm -f $(BINDIR)/f2m
+	rm -f $(BINDIR)/k2m
+	rm -f $(BINDIR)/m2k
+	rm -f $(BINDIR)/c2i
+	rm -f $(BINDIR)/i2c
+	rm -f $(BINDIR)/m2y
+	rm -f $(BINDIR)/y2m
 
 format:
 	clang-format -style=file:./.clang-format -i $(SRCS)
